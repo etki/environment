@@ -1,0 +1,12 @@
+# IDE files
+
+.idea
+.settings
+.project
+nbproject
+
+# Installation files
+
+/vendor
+/composer.lock
+tests/_output/*
