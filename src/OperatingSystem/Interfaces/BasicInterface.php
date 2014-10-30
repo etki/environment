@@ -3,6 +3,7 @@
 namespace Etki\Environment\OperatingSystem\Interfaces;
 
 use Etki\Environment\OperatingSystem\User\User;
+use Etki\Environment\OperatingSystem\Shell\CommandLineInterface;
 
 /**
  * Basic operating system interface.
@@ -17,10 +18,19 @@ interface BasicInterface
     /**
      * Retrieves CLI.
      *
-     * @return
+     * @return CommandLineInterface
      * @since 0.1.0
      */
     public function getShell();
+
+    /**
+     * Returns class with basic filesystem functionality. Returned object
+     * doesn't have any references to Symfony Filesystem component.
+     *
+     * @return mixed
+     * @since 0.1.0
+     */
+    public function getFilesystem();
 
     /**
      * retrieves OS version.

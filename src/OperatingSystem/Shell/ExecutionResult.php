@@ -2,6 +2,8 @@
 
 namespace Etki\Environment\OperatingSystem\Shell;
 
+use RuntimeException;
+
 /**
  * Result of a single execution.
  *
@@ -49,20 +51,25 @@ class ExecutionResult
      */
     public function start()
     {
+        $this->assertNotStarted();
         $this->startTime = microtime(true);
     }
 
     /**
      * Ends command execution.
      *
-     * @param string $output Execution output.
+     * @param int    $exitCode Exit code of execution.
+     * @param string $output   Execution output.
      *
      * @return void
      * @since 0.1.0
      */
-    public function finish($output)
+    public function finish($exitCode, $output = null)
     {
+        $this->assertNotFinished();
+        $this->assertStarted();
         $this->endTime = microtime(true);
+        $this->exitCode = $exitCode;
         $this->output = $output;
     }
 
@@ -74,6 +81,7 @@ class ExecutionResult
      */
     public function getExitCode()
     {
+        $this->assertFinished();
         return $this->exitCode;
     }
 
@@ -85,6 +93,77 @@ class ExecutionResult
      */
     public function getOutput()
     {
+        $this->assertFinished();
         return $this->output;
+    }
+
+    /**
+     * Asserts that execution hasn't started yet.
+     *
+     * @throws RuntimeException Thrown if execution has already been started.
+     *
+     * @inline
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function assertNotStarted()
+    {
+        $this->assertNotFinished();
+        if (isset($this->startTime)) {
+            throw new RuntimeException('Execution has already started');
+        }
+    }
+
+    /**
+     * Asserts that execution has already been started at the moment.
+     *
+     * @throws RuntimeException Thrown if execution hasn't been started yet.
+     *
+     * @inline
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function assertStarted()
+    {
+        if (!isset($this->startTime)) {
+            throw new RuntimeException('Execution hasn\'t been started');
+        }
+    }
+
+    /**
+     * Asserts that execution hasn't been finished.
+     *
+     * @throws RuntimeException Thrown if execution has already been finished.
+     *
+     * @inline
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function assertNotFinished()
+    {
+        if (isset($this->endTime)) {
+            throw new RuntimeException('Execution has already finished');
+        }
+    }
+
+    /**
+     * Asserts that execution has already finished.
+     *
+     * @throws RuntimeException Thrown if execution hasn't finished yet.
+     *
+     * @inline
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function assertFinished()
+    {
+        $this->assertStarted();
+        if (!isset($this->endTime)) {
+            throw new RuntimeException('Execution hasn\'t finished yet');
+        }
     }
 }

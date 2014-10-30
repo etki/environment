@@ -46,7 +46,7 @@ $snapshot = $environment->variables->load(
         'post' => [
             'dbname' => 'wordpress',
             'uname' => 'wordpress',
-            'pwd' => 'oh my god this is password so secret i'm gonna tweet about it',
+            'pwd' => 'oh my god this is password so secret i\'m gonna tweet about it',
             'dbhost' => 'localhost',
             'prefix' => 'wp_',
         ],
@@ -90,7 +90,7 @@ $environment->variables->restore($secondSnap); // will throw an exception
 
 Boring API:
 
-```
+```php
 $environment->variables->setQueryParameter($key, $value);
 
 // will throw an exception if parameter doesn't exist
@@ -175,9 +175,11 @@ $environment->shell->execute(['command', '--flag', true, 'directory with spaces'
 The name of the magic property is subject to change in future releases (though
 it will be supported up to release 1.0)
 
+Basically this is just a wrapper around native functions for OOP-lovers.
+
 ```php
-$environment->interpreter->getVersion();       // 5.5.9
-$environment->interpreter->getVersion(true);   // 5.5.9-1ubuntu4.4
-$environment->interpreter->isSessionEnabled(); // true
-$environment->interpreter->getExtensions();    // ['Core', 'date', 'ereg',..]
+$environment->interpreter->getVersion();          // 5.5.9
+$environment->interpreter->getVersionSignature(); // 5.5.9-1ubuntu4.4
+$environment->interpreter->isSessionEnabled();    // true
+$environment->interpreter->getExtensions();       // ['Core', 'date', 'ereg',..]
 ```

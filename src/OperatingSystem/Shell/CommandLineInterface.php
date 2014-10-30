@@ -12,7 +12,7 @@ use RuntimeException;
  * @package Etki\Environment\OperatingSystem\Shell
  * @author  Etki <etki@etki.name>
  */
-interface ShellInterface
+interface CommandLineInterface
 {
     /**
      * Executes command.
@@ -46,12 +46,10 @@ interface ShellInterface
     /**
      * Runs command in background.
      *
-     * @param string $command           Command to run.
-     * @param bool   $suppressException If set to true, method won't throw
-     *                                  exception on failed run.
+     * @param string $command Command to run.
      *
-     * @return ExecutionResult
+     * @return void
      * @since 0.1.0
      */
-    public function background($command, $suppressException = false);
+    public function background($command);
 }

@@ -7,12 +7,14 @@ use RuntimeException;
 /**
  * Basic shell realization.
  *
+ * @todo exceptions
+ *
  * @version 0.1.0
  * @since   0.1.0
  * @package Etki\Environment\Shell
  * @author  Etki <etki@etki.name>
  */
-class Shell implements ShellInterface
+class Shell implements CommandLineInterface
 {
     /**
      * Executes provided command.
@@ -29,13 +31,16 @@ class Shell implements ShellInterface
      */
     public function execute($commmand, $suppressException = false)
     {
-
+        $result = new ExecutionResult;
+        $result->start();
+        exec($commmand, $output, $exitCode);
+        $result->finish($exitCode, implode(PHP_EOL, $output));
     }
 
     /**
      * Executes provided command, passing it's output to user instantly.
      *
-     * @param string $commmand          Command to run.
+     * @param string $command           Command to run.
      * @param bool   $suppressException If set to true, no exception will be
      *                                  thrown on error code <> 0.
      *
@@ -47,7 +52,10 @@ class Shell implements ShellInterface
      */
     public function passthru($command, $suppressException = false)
     {
-
+        $result = new ExecutionResult;
+        $result->start();
+        passthru($command, $exitCode);
+        $result->finish($exitCode);
     }
 
     /**
@@ -55,11 +63,11 @@ class Shell implements ShellInterface
      *
      * @param string $command Command to run
      *
-     * @return ExecutionResult
+     * @return ExecutionResult Results.
      * @since 0.1.0
      */
-    public function background($command, $suppressException = false)
+    public function background($command)
     {
-
+        return $this->execute($command . ' 2>&1 &');
     }
 }
