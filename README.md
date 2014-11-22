@@ -66,7 +66,8 @@ require $wpRoot . '/wp-admin/setup-config.php';
 // Restoring pre-emulated environment.
 $environment->variables->reset();
 // Actually, restore(0) would give the very same thing, though reset(true) will
-// erase everything it can. Be careful with session, though.
+// erase everything it can, except for $_SERVER. Be careful with session,
+// though.
 
 // oh my god, i've forgot to do something! time machine to the rescue!
 
@@ -183,3 +184,8 @@ $environment->interpreter->getVersionSignature(); // 5.5.9-1ubuntu4.4
 $environment->interpreter->isSessionEnabled();    // true
 $environment->interpreter->getExtensions();       // ['Core', 'date', 'ereg',..]
 ```
+
+# Limitations
+
+You should remember - whenever you push anything to the history, it stays in the
+history. That means that all objects that were saved in history will exist until

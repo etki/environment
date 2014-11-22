@@ -15,11 +15,12 @@
     }
   },
   "require-dev": {
-    "codeception/codeception": "~2.0",
+    "codeception/codeception": "2.1.x-dev",
     "sebastian/phpdcd": "~1.0",
     "satooshi/php-coveralls": "dev-master",
     "phpmd/phpmd": "~2.1",
     "squizlabs/php_codesniffer": "~1.5",
-    "block8/php-docblock-checker": "~1.0"
+    "block8/php-docblock-checker": "~1.0",
+    "mikey179/vfsstream": "~1.4"
   }
 }

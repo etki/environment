@@ -1,0 +1,34 @@
+build_settings:
+  clone_depth: 1 # shallow clone
+  ignore:
+    - vendor
+    - tests
+
+setup:
+  composer:
+    action: install
+    prefer_dist: true
+
+test:
+  php_parallel_lint:
+    directory: src
+  codeception:
+    config: codeception.yml
+  php_loc:
+    directory: src
+    allow_failures: true
+  php_mess_detector:
+    rules:
+      - codesize
+      - unusedcode
+      - naming
+      - controversial
+      - design
+    path: src
+    allow_failures: true
+  php_code_sniffer:
+    path: src
+    encoding: utf-8
+    tab_width: 4
+    standard: "PSR1,PSR2"
+    allow_failures: true
