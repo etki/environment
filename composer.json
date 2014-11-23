@@ -11,7 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Etki\\Environment\\" : "src/"
+      "Etki\\Environment\\" : "src/",
+      "Etki\\Environment\\Tests\\" : "tests/"
     }
   },
   "require-dev": {
