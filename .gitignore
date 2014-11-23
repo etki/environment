@@ -9,4 +9,4 @@ nbproject
 
 /vendor
 /composer.lock
-tests/Output/*
+/tests/Output/*

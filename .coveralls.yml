@@ -1,0 +1,4 @@
+service_name: codeship
+src_dir: src
+coverage_clover: tests/Output/coverage.xml
+json_path: tests/Output/coverage.json
