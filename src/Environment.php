@@ -3,10 +3,21 @@
 namespace Etki\Environment;
 
 use Etki\Environment\OperatingSystem\Interfaces\BasicInterface;
-use Etki\Environment\Variables\VariableManager;
+use Etki\Environment\Variables\History\ConsecutiveHistory;
+use Etki\Environment\Variables\History\StepHistory;
+use Etki\Environment\Variables\Manager as VariablesManager;
+use Etki\Environment\Interpreter\Interpreter;
+use Etki\Environment\OperatingSystem\Shell\CommandLineInterface;
+use BadMethodCallException;
 
 /**
  * Base class.
+ *
+ * @property BasicInterface $os
+ * @property CommandLineInterface $shell
+ * @property VariablesManager $variables
+ *
+ * @SuppressWarnings(PHPMD.ShortVariableName)
  *
  * @version 0.1.0
  * @since   0.1.0
@@ -25,30 +36,67 @@ class Environment
     /**
      * Environmental variables.
      *
-     * @type VariableManager
+     * @type VariablesManager
      * @since 0.1.0
      */
     protected $variables;
-
     /**
-     * Retrieves shell.
+     * PHP interpreter representation.
      *
-     * @return void
+     * @type Interpreter
      * @since 0.1.0
      */
-    public function getShell()
+    protected $interpreter;
+
+    /**
+     * Initializer.
+     *
+     * @param array $config Configuration values.
+     *
+     * @return self
+     * @since 0.1.0
+     */
+    public function __construct(array $config = array())
     {
-        $this->os->getShell();
+        $this->interpreter = new Interpreter;
+        //$this->os = new OperatingSystem;
+        $historyType = null;
+        if (isset($config['history'])) {
+            $historyType = $config['history'];
+        }
+        switch ($historyType) {
+            case 'step':
+                $history = new StepHistory;
+                break;
+            default:
+                $history = new ConsecutiveHistory;
+        }
+        $this->variables = new VariablesManager($history, $this->interpreter);
+        $this->variables->initialize();
     }
 
     /**
-     * Returns operating system class.
+     * Getter for gaining access to inner variables.
      *
-     * @return BasicInterface
+     * @param string $name Property name.
+     *
+     * @return Interpreter|BasicInterface|CommandLineInterface|VariablesManager
      * @since 0.1.0
      */
-    public function getOs()
+    public function __get($name)
     {
-        return $this->os;
+        switch ($name) {
+            case 'os':
+                return $this->os;
+            case 'shell':
+                return $this->os->getShell();
+            case 'variables':
+                return $this->variables;
+            case 'interpreter':
+                return $this->interpreter;
+            default:
+                $message = sprintf('Unknown property `%s`', $name);
+                throw new BadMethodCallException($message);
+        }
     }
 }

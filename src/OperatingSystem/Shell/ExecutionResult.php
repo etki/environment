@@ -3,6 +3,7 @@
 namespace Etki\Environment\OperatingSystem\Shell;
 
 use RuntimeException;
+use BadMethodCallException;
 
 /**
  * Result of a single execution.
@@ -29,12 +30,26 @@ class ExecutionResult
      */
     protected $endTime;
     /**
-     * Command output.
+     * Unified command output.
      *
      * @type string
      * @since 0.1.0
      */
     protected $output;
+    /**
+     * Standard output stream.
+     *
+     * @type string
+     * @since 0.1.0
+     */
+    protected $stdOut;
+    /**
+     * Error output stream.
+     *
+     * @type string
+     * @since 0.1.0
+     */
+    protected $stdErr;
     /**
      * Command exit code.
      *
@@ -56,21 +71,68 @@ class ExecutionResult
     }
 
     /**
-     * Ends command execution.
+     * Appends output standard output stream record.
      *
-     * @param int    $exitCode Exit code of execution.
-     * @param string $output   Execution output.
+     * @param string $output Output.
      *
      * @return void
      * @since 0.1.0
      */
-    public function finish($exitCode, $output = null)
+    public function appendStdOut($output)
+    {
+        $this->appendStream($this->stdOut, $output);
+    }
+
+    /**
+     * Appends output to standard error stream record.
+     *
+     * @param string $output Output.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function appendStdErr($output)
+    {
+        $this->appendStream($this->stdErr, $output);
+    }
+
+    /**
+     * Appends output to particular stream record and unified output record.
+     *
+     * @param string|null $stream Stream reference link.
+     * @param string      $output Output to append.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    protected function appendStream(&$stream, $output)
+    {
+        if (!$stream) {
+            $stream = $output;
+        } else {
+            $stream .= $output;
+        }
+        if (!isset($this->output)) {
+            $this->output = $output;
+        } else {
+            $this->output .= $output;
+        }
+    }
+
+    /**
+     * Ends command execution.
+     *
+     * @param int $exitCode Exit code of execution.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function finish($exitCode)
     {
         $this->assertNotFinished();
         $this->assertStarted();
         $this->endTime = microtime(true);
         $this->exitCode = $exitCode;
-        $this->output = $output;
     }
 
     /**
@@ -93,8 +155,32 @@ class ExecutionResult
      */
     public function getOutput()
     {
-        $this->assertFinished();
+        $this->assertStarted();
         return $this->output;
+    }
+
+    /**
+     * Returns standard output recording.
+     *
+     * @return string
+     * @since 0.1.0
+     */
+    public function getStdOut()
+    {
+        $this->assertStarted();
+        return $this->stdOut;
+    }
+
+    /**
+     * Returns standard error stream recording.
+     *
+     * @return string
+     * @since 0.1.0
+     */
+    public function getStdErr()
+    {
+        $this->assertStarted();
+        return $this->stdErr;
     }
 
     /**

@@ -83,7 +83,7 @@ $environment->variables->restore($secondShot);
 // ...but it will erase them as soon as you'll start rewriting it
 
 $environment->variables->reset();
-$environment->variables->snapshot();
+$environment->variables->setRuntimeParameter($key, $value);
 $environment->variables->restore($secondSnap); // will throw an exception
 // however, $secondSnap is just an integer ID, no hashing magic, so it's value
 // *may* become legal later
@@ -109,6 +109,14 @@ $environment->variables->deleteQueryParameter($key);
 // simple wrapper around server HTTP_* variables
 $environment->variables->getHeader($key);
 $environment->variables->getHeader($key, $default);
+
+// a special guest - runtime storage, our favourite Registry pattern.
+// Snapshottable as well!
+$environment->variables->setRuntimeItem($key, $data);
+$environment->variables->getRuntimeItem($key);
+$environment->variables->getRuntimeItem($key, $default);
+$environment->variables->hasRuntimeItem($key);
+$environment->variables->deleteRuntimeItem($key);
 ```
 
 ## Fetching OS data
@@ -150,19 +158,14 @@ $environment->os->kill($pid);
 ## Shell
 
 ```php
-// throws RuntimeException if exit code is other than 0
-// returns Etki\Environment\OperatingSystem\Shell\ExecutionResult
+// returns Etki\Environment\OperatingSystem\Shell\ExecutionResult with all data
+// you may need about single process run
 $environment->shell->execute('/usr/local/bin/composer update -d /var/www/project');
-// Heya, no exceptions
-$environment->shell->execute('/usr/local/bin/composer update -d /var/www/project', true);
 
-// Quite the same effect, but will print execution data directly on screen, and
-// result won't have any output attached for obvious reasons. This may change
-// in future versions.
+// Quite the same effect, but will print execution data directly on screen
 $environment->shell->passthru('/usr/local/bin/composer update -d /var/www/project');
-$environment->shell->passthru('/usr/local/bin/composer update -d /var/www/project', true);
 
-// You know the drill. Basically appends os-dependent run-in-background flag
+// You know the drill. Basically adds os-dependent run-in-background flag
 $environment->shell->background('/usr/local/bin/composer update -d /var/www/project');
 
 // Alternative syntax for command setting. Will auto-escape spaces and convert
@@ -189,3 +192,4 @@ $environment->interpreter->getExtensions();       // ['Core', 'date', 'ereg',..]
 
 You should remember - whenever you push anything to the history, it stays in the
 history. That means that all objects that were saved in history will exist until
+history is destroyed.
