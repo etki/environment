@@ -1,24 +1,34 @@
 <?php
 
-namespace Variables;
+namespace Etki\Environment\Tests\Unit\Variables;
 
-use Etki\Environment\Variables\VariableManager;
-use Etki\Environment\Variables\VariableStorage;
+use Etki\Environment\Variables\Storage;
+use ArrayAccess;
 
-class VariableStorageTest extends \Codeception\TestCase\Test
+/**
+ * Tests variable storage.
+ *
+ * @version 0.1.0
+ * @since   0.1.0
+ * @package Etki\Environment\Tests\Unit\Variables
+ * @author  Etki <etki@etki.name>
+ */
+class StorageTest extends \Codeception\TestCase\Test
 {
     /**
-     * @var \UnitTester
+     * Tested class FQCN.
+     *
+     * @type string
+     * @since 0.1.0
      */
-    protected $tester;
-    protected $testedClass = 'Etki\Environment\Variables\VariableStorage';
+    const TESTED_CLASS = 'Etki\Environment\Variables\Storage';
 
     /**
+     * Returns new storage instance.
      *
+     * @param array|ArrayAccess $storage
      *
-     * @param null $storage
-     *
-     * @return VariableStorage
+     * @return Storage New instance.
      * @since 0.1.0
      */
     protected function getInstance(&$storage = null)
@@ -26,8 +36,18 @@ class VariableStorageTest extends \Codeception\TestCase\Test
         if (!is_array($storage)) {
             $storage = array();
         }
-        return new $this->testedClass($storage);
+        $testedClass = self::TESTED_CLASS;
+        return new $testedClass($storage);
     }
+
+    /**
+     * Boring test.
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
+     * @return void
+     * @since 0.1.0
+     */
     public function testStorage()
     {
         $storage = array(1 => 12,);
@@ -46,14 +66,9 @@ class VariableStorageTest extends \Codeception\TestCase\Test
         $this->assertFalse($interface->has(2));
         $this->assertArrayNotHasKey(2, $storage);
 
-        $manager = new VariableManager; // testing program with itself
-                                        // it will be fun if it fails
-        $snapshot = $manager->snapshot();
-
         $key = md5(time());
-        if (isset($_SERVER[$key])) {
-            unset($_SERVER[$key]);
-        }
+        unset($_SERVER[$key]);
+
         $interface = $this->getInstance($_SERVER);
         $this->assertArrayNotHasKey($key, $_SERVER);
         $this->assertFalse($interface->has($key));
@@ -73,6 +88,6 @@ class VariableStorageTest extends \Codeception\TestCase\Test
         $this->assertEmpty($_SERVER);
         $this->assertSame(0, $interface->getLength());
 
-        $manager->restore($snapshot);
+        unset($_SERVER[$key]);
     }
 }

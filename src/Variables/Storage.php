@@ -3,6 +3,7 @@
 namespace Etki\Environment\Variables;
 
 use ArrayAccess;
+use Etki\Environment\Patterns\Notifier;
 
 /**
  * Simple variable storage wrap that controls underlying level.
@@ -12,7 +13,7 @@ use ArrayAccess;
  * @package Etki\Environment\Variables
  * @author  Etki <etki@etki.name>
  */
-class VariableStorage
+class Storage extends Notifier
 {
     /**
      * Storage itself.
@@ -21,18 +22,38 @@ class VariableStorage
      * @since 0.1.0
      */
     protected $storage;
+    /**
+     * Storage identifier.
+     *
+     * @type string
+     * @since 0.1.0
+     */
+    protected $identifier;
 
     /**
      * Creates instance.
      *
-     * @param array|ArrayAccess $storage Real value storage.
+     * @param array|ArrayAccess $storage   Real value storage.
+     * @param string            $storageId Storage identifier.
      *
      * @return self
      * @since 0.1.0
      */
-    public function __construct(&$storage)
+    public function __construct(&$storage, $storageId = null)
     {
         $this->storage = &$storage;
+        $this->identifier = $storageId;
+    }
+
+    /**
+     * Returns storage identifier, if any has been set.
+     *
+     * @return null|string
+     * @since 0.1.0
+     */
+    public function getId()
+    {
+        return $this->identifier;
     }
 
     /**
