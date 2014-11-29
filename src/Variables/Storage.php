@@ -48,7 +48,7 @@ class Storage extends Notifier
     /**
      * Returns storage identifier, if any has been set.
      *
-     * @return null|string
+     * @return string
      * @since 0.1.0
      */
     public function getId()

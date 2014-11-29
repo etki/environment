@@ -4,6 +4,7 @@ namespace Etki\Environment\Tests\Unit\Variables;
 
 use Etki\Environment\Variables\Storage;
 use ArrayAccess;
+use Codeception\TestCase\Test;
 
 /**
  * Tests variable storage.
@@ -13,7 +14,7 @@ use ArrayAccess;
  * @package Etki\Environment\Tests\Unit\Variables
  * @author  Etki <etki@etki.name>
  */
-class StorageTest extends \Codeception\TestCase\Test
+class StorageTest extends Test
 {
     /**
      * Tested class FQCN.
@@ -26,18 +27,30 @@ class StorageTest extends \Codeception\TestCase\Test
     /**
      * Returns new storage instance.
      *
-     * @param array|ArrayAccess $storage
+     * @param array|ArrayAccess $storage    Storage to wrap.
+     * @param int|string        $identifier Storage identifier.
      *
      * @return Storage New instance.
      * @since 0.1.0
      */
-    protected function getInstance(&$storage = null)
+    protected function getInstance(&$storage, $identifier = null)
     {
-        if (!is_array($storage)) {
-            $storage = array();
-        }
         $testedClass = self::TESTED_CLASS;
-        return new $testedClass($storage);
+        return new $testedClass($storage, $identifier);
+    }
+
+    /**
+     * Just a stupid method to improve coverage.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function testId()
+    {
+        $identifier = rand(~PHP_INT_MAX, PHP_INT_MAX);
+        $dummy = array();
+        $storage = $this->getInstance($dummy, $identifier);
+        $this->assertSame($identifier, $storage->getId());
     }
 
     /**

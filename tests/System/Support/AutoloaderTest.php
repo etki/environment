@@ -4,6 +4,7 @@ namespace Etki\Environment\Tests\System\Support;
 
 use Etki\Environment\Support\Autoloader;
 use org\bovigo\vfs\vfsStream;
+use Codeception\TestCase\Test;
 
 /**
  * Tests that autoloader really does it's autoloading functions.
@@ -16,7 +17,7 @@ use org\bovigo\vfs\vfsStream;
  * @package Etki\Environment\Tests\System\Support
  * @author  Etki <etki@etki.name>
  */
-class AutoloaderTest extends \Codeception\TestCase\Test
+class AutoloaderTest extends Test
 {
     /**
      * Virtual filesystem structure.
@@ -62,6 +63,8 @@ class AutoloaderTest extends \Codeception\TestCase\Test
         }
     }
 
+    // @codingStandardsIgnoreStart
+
     /**
      * Attaches detached autoloaders.
      *
@@ -81,6 +84,8 @@ class AutoloaderTest extends \Codeception\TestCase\Test
     /**
      * Before-test setup method.
      *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
      * @return void
      * @since 0.1.0
      */
@@ -95,6 +100,8 @@ class AutoloaderTest extends \Codeception\TestCase\Test
     /**
      * After-test cleanup method.
      *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
      * @return void
      * @since 0.1.0
      */
@@ -102,6 +109,8 @@ class AutoloaderTest extends \Codeception\TestCase\Test
     {
         vfsStream::setup('vfs');
     }
+
+    // @codingStandardsIgnoreEnd
 
     // tests
 
@@ -139,7 +148,7 @@ class AutoloaderTest extends \Codeception\TestCase\Test
         $this->detachAutoloaders();
         /** @type Autoloader $autoloader */
         $autoloader = new $autoloaderClassName;
-        $autoloader->add('TestNs', vfsStream::url('vfs/src'));
+        $autoloader->addNamespace('TestNs', vfsStream::url('vfs/src'));
         $autoloader->register();
         $classExists = class_exists($className, true);
         $autoloader->unregister();

@@ -3,6 +3,7 @@
 namespace Etki\Environment\Tests\Unit\Variables\History;
 
 use Etki\Environment\Variables\History\ConsecutiveHistory;
+use Codeception\TestCase\Test;
 
 /**
  * Tests consecutive history class.
@@ -12,7 +13,7 @@ use Etki\Environment\Variables\History\ConsecutiveHistory;
  * @package Etki\Environment\Tests\Unit\Variables\History
  * @author  Etki <etki@etki.name>
  */
-class ConsecutiveHistoryTest extends \Codeception\TestCase\Test
+class ConsecutiveHistoryTest extends Test
 {
     /**
      * Tested class FQCN

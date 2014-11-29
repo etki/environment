@@ -4,6 +4,7 @@ namespace Etki\Environment\Tests\Unit\Support;
 
 use Etki\Environment\Support\Autoloader;
 use org\bovigo\vfs\vfsStream;
+use Codeception\TestCase\Test;
 
 /**
  * Tests autoloader.
@@ -13,7 +14,7 @@ use org\bovigo\vfs\vfsStream;
  * @package Etki\Environment\Tests\Unit\Support
  * @author  Etki <etki@etki.name>
  */
-class AutoloaderTest extends \Codeception\TestCase\Test
+class AutoloaderTest extends Test
 {
     /**
      * Virtual filesystem structure.
@@ -27,8 +28,12 @@ class AutoloaderTest extends \Codeception\TestCase\Test
         ),
     );
 
+    // @codingStandardsIgnoreStart
+
     /**
      * Before-test setup method.
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      *
      * @return void
      * @since 0.1.0
@@ -42,6 +47,8 @@ class AutoloaderTest extends \Codeception\TestCase\Test
     /**
      * After-test cleanup method.
      *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
      * @return void
      * @since 0.1.0
      */
@@ -50,7 +57,55 @@ class AutoloaderTest extends \Codeception\TestCase\Test
         vfsStream::setup('vfs');
     }
 
+    // @codingStandardsIgnoreEnd
+
+    // data providers
+
+    /**
+     * Provides namespaces to preload, name of the class and path which
+     * autoloader should output for that particular FQCN.
+     *
+     * @return array
+     * @since 0.1.0
+     */
+    public function classNamePathProvider()
+    {
+        return array(
+            array(
+                array('TestNamespace' => '/some/path',),
+                'TestNamespace\SubSpace\TestClass',
+                '/some/path/SubSpace/TestClass.php',
+            ),
+            array(
+                array(),
+                'TestNamespace\TestClass',
+                false
+            )
+        );
+    }
+
     // tests
+
+    /**
+     * Verifies that class names are resolved to correct paths.
+     *
+     * @param string[] $namespaces Namespaces to preload in
+     *                             [namespace => root dir] format.
+     * @param string   $className  Fully-qualified class name.
+     * @param string   $path       Expected resolved path.
+     *
+     * @dataProvider classNamePathProvider
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function testPathResolving(array $namespaces, $className, $path)
+    {
+        $autoloader = new Autoloader;
+        $autoloader->addNamespaces($namespaces);
+        $this->assertSame($path, $autoloader->locateClass($className));
+    }
+
     /**
      * Tests that autoloader finds specified class.
      *
@@ -60,10 +115,12 @@ class AutoloaderTest extends \Codeception\TestCase\Test
     public function testAutoloading()
     {
         $autoloader = new Autoloader;
-        $autoloader->add('TestNs', vfsStream::url('vfs/src'));
+        $autoloader->addNamespace('TestNs', vfsStream::url('vfs/src'));
         $className = 'TestNs\TestClassA';
         $this->assertFalse(class_exists($className, false));
-        $autoloader->loadClass($className);
+        $this->assertTrue($autoloader->loadClass($className));
         $this->assertTrue(class_exists($className, false));
+        $missingClassName = 'Missing\Missing';
+        $this->assertFalse($autoloader->loadClass($missingClassName));
     }
 }

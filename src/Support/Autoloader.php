@@ -28,10 +28,26 @@ class Autoloader
      * @return void
      * @since 0.1.0
      */
-    public function add($namespace, $root)
+    public function addNamespace($namespace, $root)
     {
         $namespace = trim($namespace, '\\');
         $this->namespaces[$namespace] = $root;
+    }
+
+    /**
+     * Imports many namespaces at once.
+     *
+     * @param string[] $namespaces List of namespaces in [namespace => root dir]
+     *                             format.
+     *
+     * @return void
+     * @since 0.1.0
+     */
+    public function addNamespaces(array $namespaces)
+    {
+        foreach ($namespaces as $namespace => $root) {
+            $this->addNamespace($namespace, $root);
+        }
     }
 
     /**
@@ -43,6 +59,25 @@ class Autoloader
      * @since 0.1.0
      */
     public function loadClass($className)
+    {
+        $path = $this->locateClass($className);
+        if (!file_exists($path) || !is_readable($path)) {
+            return false;
+        }
+        include $path;
+        return true;
+    }
+
+    /**
+     * Locates class by it's name.
+     *
+     * @param string $className Fully-qualified class name.
+     *
+     * @return false|string Path to file or false if class namespace hasn't been
+     *                      found.
+     * @since 0.1.0
+     */
+    public function locateClass($className)
     {
         $className = trim($className, '\\');
         $candidate = null;
@@ -60,12 +95,7 @@ class Autoloader
         $relativeClassName = substr($className, strlen($candidate));
         $dirSep = DIRECTORY_SEPARATOR;
         $relativePath = str_replace('\\', $dirSep, $relativeClassName);
-        $path = $directory . $relativePath . '.php';
-        if (!file_exists($path) || !is_readable($path)) {
-            return false;
-        }
-        include $path;
-        return true;
+        return $directory . $relativePath . '.php';
     }
 
     /**
