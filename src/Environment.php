@@ -2,7 +2,7 @@
 
 namespace Etki\Environment;
 
-use Etki\Environment\OperatingSystem\Interfaces\BasicInterface;
+use Etki\Environment\OperatingSystem\Interfaces\BasicOsInterface;
 use Etki\Environment\Variables\History\ConsecutiveHistory;
 use Etki\Environment\Variables\History\StepHistory;
 use Etki\Environment\Variables\Manager as VariablesManager;
@@ -13,7 +13,7 @@ use BadMethodCallException;
 /**
  * Base class.
  *
- * @property BasicInterface $os
+ * @property BasicOsInterface $os
  * @property CommandLineInterface $shell
  * @property VariablesManager $variables
  *
@@ -29,7 +29,7 @@ class Environment
     /**
      * Operation System class instance.
      *
-     * @type BasicInterface
+     * @type BasicOsInterface
      * @since 0.1.0
      */
     protected $os;
@@ -58,8 +58,8 @@ class Environment
      */
     public function __construct(array $config = array())
     {
-        $this->interpreter = new Interpreter;
         //$this->os = new OperatingSystem;
+        $this->interpreter = new Interpreter($this->os);
         $historyType = null;
         if (isset($config['history'])) {
             $historyType = $config['history'];
@@ -80,7 +80,7 @@ class Environment
      *
      * @param string $name Property name.
      *
-     * @return Interpreter|BasicInterface|CommandLineInterface|VariablesManager
+     * @return Interpreter|BasicOsInterface|CommandLineInterface|VariablesManager
      * @since 0.1.0
      */
     public function __get($name)

@@ -1,8 +1,7 @@
 <?php
 
-namespace Etki\Environment\OperatingSystem\Shell;
+namespace Etki\Environment\OperatingSystem\Process;
 
-use RuntimeException;
 use BadMethodCallException;
 
 /**
@@ -13,7 +12,7 @@ use BadMethodCallException;
  * @package Etki\Environment\OperatingSystem\Shell
  * @author  Etki <etki@etki.name>
  */
-class ExecutionResult
+class Result
 {
     /**
      * Time of the process start.
@@ -61,13 +60,14 @@ class ExecutionResult
     /**
      * Starts command execution.
      *
-     * @return void
+     * @return self
      * @since 0.1.0
      */
     public function start()
     {
         $this->assertNotStarted();
         $this->startTime = microtime(true);
+        return $this;
     }
 
     /**
@@ -75,12 +75,13 @@ class ExecutionResult
      *
      * @param string $output Output.
      *
-     * @return void
+     * @return self
      * @since 0.1.0
      */
     public function appendStdOut($output)
     {
         $this->appendStream($this->stdOut, $output);
+        return $this;
     }
 
     /**
@@ -88,12 +89,13 @@ class ExecutionResult
      *
      * @param string $output Output.
      *
-     * @return void
+     * @return self
      * @since 0.1.0
      */
     public function appendStdErr($output)
     {
         $this->appendStream($this->stdErr, $output);
+        return $this;
     }
 
     /**
@@ -107,6 +109,7 @@ class ExecutionResult
      */
     protected function appendStream(&$stream, $output)
     {
+        $this->assertStarted();
         if (!$stream) {
             $stream = $output;
         } else {
@@ -124,7 +127,7 @@ class ExecutionResult
      *
      * @param int $exitCode Exit code of execution.
      *
-     * @return void
+     * @return self
      * @since 0.1.0
      */
     public function finish($exitCode)
@@ -133,10 +136,13 @@ class ExecutionResult
         $this->assertStarted();
         $this->endTime = microtime(true);
         $this->exitCode = $exitCode;
+        return $this;
     }
 
     /**
      * Returns program exit code.
+     *
+     * @codeCoverageIgnore
      *
      * @return int
      * @since 0.1.0
@@ -150,6 +156,8 @@ class ExecutionResult
     /**
      * Returns output.
      *
+     * @codeCoverageIgnore
+     *
      * @return string
      * @since 0.1.0
      */
@@ -161,6 +169,8 @@ class ExecutionResult
 
     /**
      * Returns standard output recording.
+     *
+     * @codeCoverageIgnore
      *
      * @return string
      * @since 0.1.0
@@ -174,6 +184,8 @@ class ExecutionResult
     /**
      * Returns standard error stream recording.
      *
+     * @codeCoverageIgnore
+     *
      * @return string
      * @since 0.1.0
      */
@@ -186,7 +198,7 @@ class ExecutionResult
     /**
      * Asserts that execution hasn't started yet.
      *
-     * @throws RuntimeException Thrown if execution has already been started.
+     * @throws BadMethodCallException Thrown if execution has already been started.
      *
      * @inline
      *
@@ -197,14 +209,14 @@ class ExecutionResult
     {
         $this->assertNotFinished();
         if (isset($this->startTime)) {
-            throw new RuntimeException('Execution has already started');
+            throw new BadMethodCallException('Execution has already started');
         }
     }
 
     /**
      * Asserts that execution has already been started at the moment.
      *
-     * @throws RuntimeException Thrown if execution hasn't been started yet.
+     * @throws BadMethodCallException Thrown if execution hasn't been started yet.
      *
      * @inline
      *
@@ -214,14 +226,14 @@ class ExecutionResult
     protected function assertStarted()
     {
         if (!isset($this->startTime)) {
-            throw new RuntimeException('Execution hasn\'t been started');
+            throw new BadMethodCallException('Execution hasn\'t been started');
         }
     }
 
     /**
      * Asserts that execution hasn't been finished.
      *
-     * @throws RuntimeException Thrown if execution has already been finished.
+     * @throws BadMethodCallException Thrown if execution has already been finished.
      *
      * @inline
      *
@@ -231,14 +243,14 @@ class ExecutionResult
     protected function assertNotFinished()
     {
         if (isset($this->endTime)) {
-            throw new RuntimeException('Execution has already finished');
+            throw new BadMethodCallException('Execution has already finished');
         }
     }
 
     /**
      * Asserts that execution has already finished.
      *
-     * @throws RuntimeException Thrown if execution hasn't finished yet.
+     * @throws BadMethodCallException Thrown if execution hasn't finished yet.
      *
      * @inline
      *
@@ -249,7 +261,7 @@ class ExecutionResult
     {
         $this->assertStarted();
         if (!isset($this->endTime)) {
-            throw new RuntimeException('Execution hasn\'t finished yet');
+            throw new BadMethodCallException('Execution hasn\'t finished yet');
         }
     }
 }

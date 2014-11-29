@@ -3,7 +3,7 @@
 namespace Etki\Environment\OperatingSystem;
 
 use BadMethodCallException;
-use Etki\Environment\OperatingSystem\Interfaces\BasicInterface;
+use Etki\Environment\OperatingSystem\Interfaces\BasicOsInterface;
 
 /**
  * Abstract class with basic functionality required by concrete operating
@@ -14,7 +14,7 @@ use Etki\Environment\OperatingSystem\Interfaces\BasicInterface;
  * @package Etki\Environment\OperatingSystem
  * @author  Etki <etki@etki.name>
  */
-abstract class AbstractOperatingSystem implements BasicInterface
+abstract class AbstractOperatingSystem implements BasicOsInterface
 {
     /**
      * Current OS family and it's ancestors.
@@ -46,6 +46,20 @@ abstract class AbstractOperatingSystem implements BasicInterface
     );
 
     /**
+     * Returns pattern for running command as background job.
+     *
+     * @return string
+     * @since 0.1.0
+     */
+    public function getBackgroundProcessPattern()
+    {
+        if ($this->belongsTo(self::FAMILY_WINDOWS)) {
+            return 'START /B %s';
+        }
+        return '%s &';
+    }
+
+    /**
      * Initializes os family hierarchy using provided family name.
      *
      * @param string $family OS family.
@@ -69,8 +83,8 @@ abstract class AbstractOperatingSystem implements BasicInterface
      * @param array  $tree   OS family tree.
      * @param string $needle OS to look for.
      *
-     * @return string[]|bool OS family with all ancestors or false if family
-     *                       hasn't been found.
+     * @return string[]|false OS family with all ancestors or false if family
+     *                        hasn't been found.
      * @since 0.1.0
      */
     protected function familyWalker($tree, $needle)

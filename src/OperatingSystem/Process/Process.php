@@ -1,6 +1,6 @@
 <?php
 
-namespace Etki\Environment\OperatingSystem\Shell;
+namespace Etki\Environment\OperatingSystem\Process;
 
 use BadMethodCallException;
 use RuntimeException;
@@ -32,7 +32,7 @@ class Process
     /**
      * Result of the run.
      *
-     * @type ExecutionResult
+     * @type Result
      * @since 0.1.0
      */
     protected $result;
@@ -47,10 +47,13 @@ class Process
     /**
      * Runs process.
      *
-     * @param string $workingDirectory Directory to run in.
+     * @param string        $workingDirectory Directory to run in.
+     * @param string[]|null $env              Environment variables for new
+     *                                        process, may be set as null to
+     *                                        copy from current process.
      *
      * @return void
-     * @since 01.0
+     * @since 0.1.0
      */
     public function run($workingDirectory, array $env = null)
     {
@@ -75,13 +78,14 @@ class Process
     /**
      * Returns status of current process.
      *
-     * @return array
+     * @return Status
      * @since 0.1.0
      */
     public function getStatus()
     {
         $this->assertHasStarted();
-        return proc_get_status($this->handle);
+        $status = proc_get_status($this->handle);
+        return Status::createFromProcStatusOutput($status);
     }
 
     /**
@@ -92,7 +96,8 @@ class Process
      */
     public function isRunning()
     {
-        $status = $this->getStatus();
+        $this->assertHasStarted();
+        $status = proc_get_status($this->handle);
         return isset($status['running']) && $status['running'];
     }
 

@@ -2,6 +2,8 @@
 
 namespace Etki\Environment\OperatingSystem\Shell;
 
+use Etki\Environment\OperatingSystem\Process\Result;
+
 /**
  * Basic shell interface.
  *
@@ -17,7 +19,7 @@ interface CommandLineInterface
      *
      * @param string $command Command to run.
      *
-     * @return ExecutionResult Results of execution.
+     * @return Result Results of execution.
      * @since 0.1.0
      */
     public function execute($command);
@@ -26,10 +28,10 @@ interface CommandLineInterface
      *
      * @param string $command Command to run.
      *
-     * @return ExecutionResult Results of execution.
+     * @return Result Results of execution.
      * @since 0.1.0
      */
-    public function passthru($command);
+    public function passThrough($command);
 
     /**
      * Runs command in background.

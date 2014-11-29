@@ -2,8 +2,9 @@
 
 namespace Etki\Environment\OperatingSystem\Shell;
 
-use RuntimeException;
+use Etki\Environment\OperatingSystem\Process\Result;
 use Etki\Environment\OperatingSystem\AbstractOperatingSystem;
+use RuntimeException;
 
 /**
  * Basic shell realization.
@@ -32,6 +33,8 @@ class Shell implements CommandLineInterface
      *
      * @SuppressWarnings(PHPMD.ShortVariableName)
      *
+     * @codeCoverageIgnore
+     *
      * @return void
      * @since 0.1.0
      */
@@ -45,12 +48,12 @@ class Shell implements CommandLineInterface
      *
      * @param string $command Command to run.
      *
-     * @return ExecutionResult
+     * @return Result Results.
      * @since 0.1.0
      */
     public function execute($command)
     {
-        $result = new ExecutionResult;
+        $result = new Result;
         $result->start();
         exec($command, $output, $exitCode);
         $result->finish($exitCode, implode(PHP_EOL, $output));
@@ -63,12 +66,12 @@ class Shell implements CommandLineInterface
      *
      * @todo refactor
      *
-     * @return ExecutionResult
+     * @return Result
      * @since 0.1.0
      */
-    public function passthru($command)
+    public function passThrough($command)
     {
-        $result = new ExecutionResult;
+        $result = new Result;
         $descriptors = array(
             array('pipe', 'r'),
             array('pipe', 'w'),
@@ -92,11 +95,11 @@ class Shell implements CommandLineInterface
                     $out .= $temp;
                 }
                 if ($stream === $pipes[1]) {
-                    $selector = ExecutionResult::STDOUT;
+                    $selector = Result::STDOUT;
                     //fputs(STDOUT, $out);
                     echo $out;
                 } else {
-                    $selector = ExecutionResult::STDERR;
+                    $selector = Result::STDERR;
                     fputs(STDERR, $out);
                 }
                 $result->write($out, $selector);
@@ -117,7 +120,7 @@ class Shell implements CommandLineInterface
      *
      * @param string $command Command to run
      *
-     * @return ExecutionResult Results.
+     * @return Result Results.
      * @since 0.1.0
      */
     public function background($command)

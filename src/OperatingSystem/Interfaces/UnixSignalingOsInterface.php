@@ -12,7 +12,7 @@ namespace Etki\Environment\OperatingSystem\Interfaces;
  * @package Etki\Environment\OperatingSystem\Interfaces
  * @author  Etki <etki@etki.name>
  */
-interface UnixSignalingInterface
+interface UnixSignalingOsInterface
 {
     const SIGNAL_TTY_DISCONNECT = 1;
     const SIGNAL_INTERRUPT_EXECUTION = 2;

@@ -32,7 +32,7 @@ class ConsecutiveHistory implements HistoryInterface
      */
     protected $history = array();
     /**
-     *
+     * Cursor to current history step.
      *
      * @type int
      * @since 0.1.0
@@ -137,7 +137,7 @@ class ConsecutiveHistory implements HistoryInterface
      */
     public function reset()
     {
-        $history = &$this->history;
+        $history = array_slice($this->history, 0, $this->cursor);
         $this->history = array();
         $this->currentSnapshot = null;
         $this->cursor = null;

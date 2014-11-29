@@ -122,5 +122,8 @@ class AutoloaderTest extends Test
         $this->assertTrue(class_exists($className, false));
         $missingClassName = 'Missing\Missing';
         $this->assertFalse($autoloader->loadClass($missingClassName));
+        $autoloader->addNamespace('MissingNs', '/bin/who-would-put-here-src');
+        $missingFileClassName = 'MissingNs\Missing';
+        $this->assertFalse($autoloader->loadClass($missingFileClassName));
     }
 }

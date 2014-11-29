@@ -48,6 +48,8 @@ class Storage extends Notifier
     /**
      * Returns storage identifier, if any has been set.
      *
+     * @codeCoverageIgnore
+     *
      * @return string
      * @since 0.1.0
      */

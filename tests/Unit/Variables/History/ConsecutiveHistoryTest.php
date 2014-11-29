@@ -95,6 +95,9 @@ class ConsecutiveHistoryTest extends Test
             $history->moveToSnapshot($secondSnapshot)
         );
         $this->assertSame($history->getCurrentSnapshot(), $secondSnapshot);
+
+        $history->moveToSnapshot($snapshot);
+        $this->assertSame($snapshots[0], $history->reset());
     }
 
 }

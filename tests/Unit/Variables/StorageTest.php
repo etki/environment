@@ -40,20 +40,6 @@ class StorageTest extends Test
     }
 
     /**
-     * Just a stupid method to improve coverage.
-     *
-     * @return void
-     * @since 0.1.0
-     */
-    public function testId()
-    {
-        $identifier = rand(~PHP_INT_MAX, PHP_INT_MAX);
-        $dummy = array();
-        $storage = $this->getInstance($dummy, $identifier);
-        $this->assertSame($identifier, $storage->getId());
-    }
-
-    /**
      * Boring test.
      *
      * @SuppressWarnings(PHPMD.Superglobals)

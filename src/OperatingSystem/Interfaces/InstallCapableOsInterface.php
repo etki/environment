@@ -2,7 +2,7 @@
 
 namespace Etki\Environment\OperatingSystem\Interfaces;
 
-use Etki\Environment\OperatingSystem\Shell\ExecutionResult;
+use Etki\Environment\OperatingSystem\Process\Result;
 
 /**
  * This interface is made for operating systems that have package manager.
@@ -12,14 +12,14 @@ use Etki\Environment\OperatingSystem\Shell\ExecutionResult;
  * @package Etki\Environment\OperatingSystem
  * @author  Etki <etki@etki.name>
  */
-interface InstallCapableInterface
+interface InstallCapableOsInterface
 {
     /**
      * Installs provided package(s).
      *
      * @param string|string[] $packages Package or list of packages to install.
      *
-     * @return ExecutionResult Operation result.
+     * @return Result Operation result.
      * @since 0.1.0
      */
     public function install($packages);
